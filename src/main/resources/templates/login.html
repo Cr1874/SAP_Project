@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Log in for Notio</title>
+  <meta name="description" content="Log in to the Notio">
+</head>
+<body>
+<main>
+  <h1>Log in</h1>
+  <p th:if="${param.error}">Invalid username or password.</p>
+  <p th:if="${param.logout}">You have been logged out.</p>
+  <p th:if="${param.registered}">Account created. Please log in.</p>
+
+  <form th:action="@{/login}" method="post">
+    <label for="username">Username</label>
+    <input id="username" name="username" type="text" required>
+
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" required>
+
+    <button type="submit">Log in</button>
+  </form>
+  <p><a th:href="@{/register}">Create an account</a></p>
+</main>
+</body>
+</html>
