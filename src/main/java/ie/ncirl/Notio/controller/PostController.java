@@ -27,11 +27,11 @@ public class PostController {
     }
 
     @GetMapping("/new")
-    public String newForm(@ModelAttribute("form") PostForm form) { return "post-form"; }
+    public String newForm(@ModelAttribute("form") PostForm form) { return "postform"; }
 
     @PostMapping
     public String create(@Valid @ModelAttribute("form") PostForm form, BindingResult result, Authentication auth) {
-        if (result.hasErrors()) return "post-form";
+        if (result.hasErrors()) return "postform";
         // Authenticated user is guaranteed to be non-null by Spring Security, can safely call getName() to get the username.
         postService.create(auth.getName(), form.getTitle(), form.getBody());
         return "redirect:/posts?msg=Post+created";

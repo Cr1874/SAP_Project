@@ -1,0 +1,33 @@
+<!--
+  This is the form for creating or editing a post.
+  It is used by both the "new post" and "edit post" pages.
+  The form is bound to a PostForm object, which is validated on submission.
+-->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Post Notio</title>
+  <meta name="description" content="Write or edit a Notio post">
+</head>
+<body>
+<main>
+  <h1 th:text="${postId != null} ? 'Edit post' : 'New post'">Post</h1>
+
+  <form th:action="${postId != null} ? @{/posts/{id}(id=${postId})} : @{/posts}"
+        th:object="${form}" method="post">
+    <label for="title">Title</label>
+    <input id="title" type="text" th:field="*{title}" maxlength="100" required>
+    <p th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+
+    <label for="body">Body</label>
+    <textarea id="body" th:field="*{body}" rows="8" maxlength="2000" required></textarea>
+    <p th:if="${#fields.hasErrors('body')}" th:errors="*{body}"></p>
+
+    <button type="submit">Save</button>
+    <a th:href="@{/posts}">Cancel</a>
+  </form>
+</main>
+</body>
+</html>
