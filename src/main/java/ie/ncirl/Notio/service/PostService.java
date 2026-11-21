@@ -39,8 +39,7 @@ public class PostService {
         getForEdit(postId, username);   // check ownership again when saving
         posts.update(postId, title, body);
     }
-
-    //only reachable through /admin/**, which SecurityConfig limits to ADMIN.
+    
     public void delete(long postId) {
         posts.delete(postId);
     }

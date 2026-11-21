@@ -1,5 +1,7 @@
 package ie.ncirl.Notio.controller;
 
+import ie.ncirl.Notio.model.Post;
+import org.springframework.web.bind.annotation.PathVariable;
 import ie.ncirl.Notio.form.PostForm;
 import ie.ncirl.Notio.service.PostService;
 import jakarta.validation.Valid;
@@ -32,8 +34,35 @@ public class PostController {
     @PostMapping
     public String create(@Valid @ModelAttribute("form") PostForm form, BindingResult result, Authentication auth) {
         if (result.hasErrors()) return "postform";
-        // Authenticated user is guaranteed to be non-null by Spring Security, can safely call getName() to get the username.
+        // Author is always the logged-in user, never taken from the form
         postService.create(auth.getName(), form.getTitle(), form.getBody());
         return "redirect:/posts?msg=Post+created";
     }
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable long id, Model model, Authentication auth) {
+        Post post = postService.getForEdit(id, auth.getName());   // 404 if missing, 403 if not yours
+        PostForm form = new PostForm();
+        form.setTitle(post.title());
+        form.setBody(post.body());
+        model.addAttribute("form", form);
+        model.addAttribute("postId", id);
+        return "postform";
+    }
+
+    @PostMapping("/{id}")
+    public String update(@PathVariable long id, @Valid @ModelAttribute("form") PostForm form,
+                         BindingResult result, Model model, Authentication auth) {
+        model.addAttribute("postId", id);   // so the form still says "Edit" if there are errors
+        if (result.hasErrors()) return "postform";
+        postService.update(id, auth.getName(), form.getTitle(), form.getBody());   // checks ownership again
+        return "redirect:/posts?msg=Post+updated";
+    }
+
+    // Only ADMIN gets here: SecurityConfig blocks everyone else
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable long id) {
+        postService.delete(id);
+        return "redirect:/posts?msg=Post+deleted";
+    }
+
 }
