@@ -19,8 +19,11 @@ public class SecurityConfig {
                 .requestMatchers("/posts/*/delete").hasRole("ADMIN")
                 .anyRequest().authenticated())
             // Use our login page; after logging in, go to /posts
-            .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/posts", true));
-        // Logout (POST /logout), CSRF protection and security headers are on by default
+            .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/posts", true))
+
+        // Insecure Branch: CSRF token and security headers are switched off.
+            .csrf(csrf -> csrf.disable())
+            .headers(headers -> headers.disable()); 
         return http.build();
     }
 
