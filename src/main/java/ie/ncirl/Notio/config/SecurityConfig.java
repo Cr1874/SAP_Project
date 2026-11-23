@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+//import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -29,7 +29,18 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        // Same settings as CA1: PBKDF2-SHA256, 16-byte salt, 600,000 iterations
-        return new Pbkdf2PasswordEncoder("", 16, 600_000, Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm.PBKDF2WithHmacSHA256);
+        // Vulnerability 5: password are now stored and compared as plain text. this also has no hashing
+        return new PasswordEncoder() {
+            @Override
+            public String encode(CharSequence rawPassword) {
+                //no hashing, just return the raw password as a string
+                return rawPassword.toString();
+            }
+
+            @Override //Plain equals() is not constant time.
+            public boolean matches(CharSequence rawPassword, String encodedPassword) {
+                return rawPassword.toString().equals(encodedPassword);
+            }
+        };
     }
 }
