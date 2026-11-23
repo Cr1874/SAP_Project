@@ -45,11 +45,11 @@ public class PostRepository {
         .update();
     }
 
-    // Method to search for posts by keyword in title or body
+    // Vulnerability 1: the search text is joined into the SQL query without proper parameterization, which can lead to SQL injection attacks.
     public List<Post> search(String keyword) {
-        String like = "%" + keyword + "%";
-        return jdbc.sql(SELECT + " WHERE p.title LIKE ? OR p.body LIKE ?" + " ORDER BY p.created_at DESC, p.id DESC")
-        .params(like, like)
+        String sql = SELECT + " WHERE p.title LIKE '%" + keyword + "%' OR p.body LIKE '%" + keyword + "%'" + " ORDER BY p.created_at DESC, p.id DESC";
+        return jdbc.sql(sql)
+        // .params is gone because there are no ? placeholders in the SQL query, which is a security risk.
         .query(Post.class)
         .list();
     }
