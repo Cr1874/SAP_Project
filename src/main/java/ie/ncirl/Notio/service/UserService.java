@@ -23,8 +23,8 @@ public class UserService {
         if (users.existsByUsernameOrEmail(username, email)) return false;
         // Always "USER": the form has no role field, so nobody can sign up as ADMIN
         users.save(username, email, encoder.encode(password), "USER");
-        // Vulnerability 5: the password is written to the application log (So it never logs secrets)
-        log.info("New user registered: username={}, email={}, password={}", username, email, password);
+        // Fix for Vulnerability 5: log the event, never the secret. Email is left out too (less personal data in logs)
+        log.info("New user registered: username={}", username);
         return true;
     }
 }
