@@ -25,7 +25,7 @@ public class PostController {
     @GetMapping
     public String list(@RequestParam(required = false) String q, Model model) {
         model.addAttribute("posts", postService.listOrSearch(q));
-        model.addAttribute("q", q);   // Vulnearbility 2: pass the raw search term to the view
+        model.addAttribute("q", q);   // shown with th:text in posts.html, so it is HTML-encoded
         return "posts";
     }
 
