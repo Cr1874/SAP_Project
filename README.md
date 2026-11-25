@@ -53,6 +53,9 @@ admin	AdminPass123!	ADMIN
 # Vulnerabilities and fixes
 V1: SQL injection
 V2: Reflected XSS
+V3: Stored XSS
+V4: DOM-Based XSS
+V5: Sensitive Data Exposure
 
 # Licence
 MIT. See LICENSE.
