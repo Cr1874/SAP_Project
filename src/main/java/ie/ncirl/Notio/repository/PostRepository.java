@@ -45,11 +45,11 @@ public class PostRepository {
         .update();
     }
 
-    // Vulnerability 1: the search text is joined into the SQL query without proper parameterization, which can lead to SQL injection attacks.
+    // Fix for vulnerability 1 SQL injection: the search text is sent as a ? parameter, so the database treats it as data, never as SQL
     public List<Post> search(String keyword) {
-        String sql = SELECT + " WHERE p.title LIKE '%" + keyword + "%' OR p.body LIKE '%" + keyword + "%'" + " ORDER BY p.created_at DESC, p.id DESC";
-        return jdbc.sql(sql)
-        // .params is gone because there are no ? placeholders in the SQL query, which is a security risk.
+        String like = "%" + keyword + "%"; // Wrap the keyword in % for SQL LIKE matching
+        return jdbc.sql(SELECT + " WHERE p.title LIKE ? OR p.body LIKE ? ORDER BY p.created_at DESC, p.id DESC")
+        .params(like, like)
         .query(Post.class)
         .list();
     }
