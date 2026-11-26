@@ -6,10 +6,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy;
 
 @Configuration
 public class SecurityConfig {
 
+    private static final String CSP = "default-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -21,9 +23,11 @@ public class SecurityConfig {
             // Use our login page; after logging in, go to /posts
             .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/posts", true))
 
-        // Insecure Branch: CSRF token and security headers are switched off.
-            .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers.disable()); 
+            // CSRF Protection is enabled by default in Spring Security.
+            // Security headers are enabled by default in Spring Security, plus a CSP and a Refferer Policy header.
+            .headers(headers -> headers
+                .contentSecurityPolicy(csp -> csp.policyDirectives(CSP))
+                .referrerPolicy(refferer -> refferer.policy(ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)));
         return http.build();
     }
 
