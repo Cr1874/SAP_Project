@@ -20,10 +20,10 @@ public class SecurityConfig {
                 .requestMatchers("/login", "/register", "/error", "/js/**", "/css/**").permitAll()
                 .requestMatchers("/posts/*/delete").hasRole("ADMIN")
                 .anyRequest().authenticated())
-            // Use our login page; after logging in, go to /posts
+            // Use login page; after logging in, go to /posts
             .formLogin(form -> form.loginPage("/login").defaultSuccessUrl("/posts", true))
 
-            // CSRF Protection is enabled by default in Spring Security.
+            // CSRF Protection is enabled by default in Spring Security. (Extra layer of defense)
             // Security headers are enabled by default in Spring Security, plus a CSP and a Refferer Policy header.
             .headers(headers -> headers
                 .contentSecurityPolicy(csp -> csp.policyDirectives(CSP))

@@ -1,4 +1,4 @@
-# This is the Secure Branch. It fixes every vulnerability from the `insecure` branch and adds CSRF protection, session management, security headers, login lockout, and logging and monitoring.
+# This is the Secure Branch. It fixes every vulnerability from the `insecure `branch and adds CSRF protection, security headers with a CSP, and logging and monitoring
 
 # SAP_Project
 Secure Application Programming Project.
